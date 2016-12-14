@@ -2,7 +2,6 @@
 
 # run: sudo /bin/bash rpi-display.sh [0, 90, 180, 270]
 
-
 # ask y/n function
 function ask()
 {
@@ -32,11 +31,6 @@ function update_system()
   # run update
   apt-get -y update
   #apt-get -y upgrade
-
-  # install curl
-  if [ ! -f "/usr/bin/curl" ] && [ ! -f "/bin/curl" ]; then
-    apt-get install -y curl
-  fi
 
   # install binutils
   apt-get install -y binutils
