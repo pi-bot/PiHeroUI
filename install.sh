@@ -35,15 +35,8 @@ function update_system()
   # install binutils
   apt-get install -y binutils
 
-  # install rpi-update
-  if [ ! -f "/usr/bin/rpi-update" ] && [ ! -f "/bin/rpi-update" ]; then
-    curl -k -L -o /usr/bin/rpi-update https://raw.githubusercontent.com/Hexxeh/rpi-update/master/rpi-update
-    chmod +x /usr/bin/rpi-update
-  fi
-
   # run rpi-update
   # official RPi Kernel from 4.1 has DMA support for SPI
-  #REPO_URI=https://github.com/notro/rpi-firmware RPI_UPDATE_UNSUPPORTED=0 update
   rpi-update
 
   # ask for reboot
@@ -51,7 +44,6 @@ function update_system()
     reboot_system
   fi
 }
-
 
 # update config.txt
 function update_configtxt()
@@ -64,6 +56,7 @@ function update_configtxt()
   # check blacklist
   if [ -f "/etc/modprobe.d/raspi-blacklist.conf" ]; then
     if ! grep -q "#blacklist spi-bcm2708" "/etc/modprobe.d/raspi-blacklist.conf"; then
+      echo "removing spi-bcm2708 from the raspi-blacklist.conf."
       sed -i 's/blacklist spi-bcm2708/#blacklist spi-bcm2708/g' "/etc/modprobe.d/raspi-blacklist.conf"
     fi
   fi
@@ -222,11 +215,7 @@ EOF
 # activate console on TFT display
 function activate_console()
 {
-  # install fbset
-  if [ ! -f "/usr/bin/fbset" ] && [ ! -f "/bin/fbset" ]; then
-    apt-get install -y fbset
-  fi
-
+  # fbset already installed
   # set parameters
   #  fonts: MINI4x6, ProFont6x11, VGA8x8 - note: newer FBTFT has no built-in fonts
   #  https://github.com/watterott/RPi-Display/blob/master/docu/FAQ.md#how-to-change-the-console-font
